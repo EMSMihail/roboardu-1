@@ -34,8 +34,8 @@ import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
  */
 public class OpenblocksFrame extends JFrame {
 
-    /**Данное поле - идентификатор класса в языке Java, используемый при сериализации
-    с использованием стадартного алгоритма. Хранится как числовое значение типа long.*/
+    /**Данное поле - идентификатор класса в языке Java, используемый при сериализации с использованием стадартного
+    алгоритма. Хранится как числовое значение типа long.*/
     private static final long serialVersionUID = 2841155965906223806L;
 
     /**Поле меню*/
@@ -96,10 +96,12 @@ public class OpenblocksFrame extends JFrame {
 
     /**Поле видимости контроллера*/
     private boolean controllerIsShown = true;
+    public boolean hideArduinoToogle = true;
 
     /**
      * Метод, создающий прослушиватель
-     * @param ofl Прослушиватель открытых оконных процедур
+     *
+     * @param ofl - Прослушиватель открытых оконных процедур
      */
     public void addListener(OpenblocksFrameListener ofl) {
         context.registerOpenblocksFrameListener(ofl);
@@ -111,9 +113,9 @@ public class OpenblocksFrame extends JFrame {
 //=======
 
     /**
-     *Метод, удаляющий все блоки (очистка)
+     * Метод, удаляющий все блоки (очистка)
      */
-    public static void deleteAllBlocks(){
+    public static void deleteAllBlocks() {
         Page.currentpage.saveScreen();
 //>>>>>>> lerofaCtrlZ
         Page.blocksContainer.removeAll();
@@ -123,7 +125,8 @@ public class OpenblocksFrame extends JFrame {
 
     /**
      * Метод, создающий название оконной процедуры и возвращающий её название
-     * @return title
+     *
+     * @return title - Название оконной процедуры
      */
     public String makeFrameTitle() {
         String title;
@@ -152,7 +155,7 @@ public class OpenblocksFrame extends JFrame {
     List<String> recentFiles = new ArrayList<>();
 
     /**
-     *  Главный метод класса
+     * Главный метод класса
      */
     //IOException e - Исключение, связанное с невозможностью закрыть поток входа,
     //после загрузки и работы с классами
@@ -186,6 +189,11 @@ public class OpenblocksFrame extends JFrame {
         context.setDefaultFileName(uiMessageBundle.getString("ardublock.ui.untitled"));
 
         settings = new Settings(this);
+
+//        if (settings.productKeyValidator(this)) {
+//            this.keyValidated = true;
+//        }
+
         this.setTitle(makeFrameTitle());
         this.setSize(new Dimension(1024, 760));
         // Определяем разрешение экрана монитора
@@ -287,7 +295,8 @@ public class OpenblocksFrame extends JFrame {
 
     /**
      * Метод, который устанавливает, через сколько произойдёт автосохранение файла
-     * @param interval Интервал времени, после которого будет сделано автосохранение
+     *
+     * @param interval - Интервал времени, после которого будет сделано автосохранение
      */
     public void setAutosaveInterval(int interval) {
         timeDelay = interval;
@@ -310,11 +319,10 @@ public class OpenblocksFrame extends JFrame {
     }
 
     /**
-     * Метод, инициализирующий рабочее пространство, цвета, розмеры,
-     * расположение всех панелей, элементов и т.д.
-     *
-     * Exception e - Не были сохранены недавние файлы
+     * Метод, инициализирующий рабочее пространство, цвета,
+     * размеры, расположение всех панелей, элементов и т.д.
      */
+     //Exception e - Не были сохранены недавние файлы
     private void initOpenBlocks() {
 
         /**Финальное (неизменяемое, без наследования) поле контекста*/
@@ -515,6 +523,9 @@ public class OpenblocksFrame extends JFrame {
         /**Финальное (неизменяемое, без наследования) поле со вторым разделителем*/
         final JLabel dividerSecond = new JLabel();
 
+        //Финальное (неизменяемое, без наследования) поле со третьим разделителем
+        final JLabel dividerThird = new JLabel();
+
         //Main logo---------------------------------------------------//
 
         /**Финальное (неизменяемое, без наследования) поле логотипа*/
@@ -679,9 +690,9 @@ public class OpenblocksFrame extends JFrame {
         saveImageButton.addActionListener(new ActionListener() {
             /**
              * Метод для сохранения кнопки в качесте png изображения
-             * @param e - Событие совершённого действия
-             * @exception Exception e1 - Не было сохранено изображение
+             * @param e Событие совершённого действия
              */
+             //Exception e1 - Не было сохранено изображение
             public void actionPerformed(ActionEvent e) {
                 Dimension size = workspace.getCanvasSize();
                 //System.out.println("size: " + size);
@@ -713,7 +724,7 @@ public class OpenblocksFrame extends JFrame {
         });
 
         ImageButton websiteButton = new ImageButton(
-                "website",
+                uiMessageBundle.getString("ardublock.ui.website"),
                 "com/ardublock/block/buttons/websiteA.jpg",
                 "com/ardublock/block/buttons/websiteB.jpg",
                 infoLabel
@@ -722,8 +733,8 @@ public class OpenblocksFrame extends JFrame {
             /**
              * Метод, осуществляющий переход на сайт омегабота
              * @param e Событие совершённого действия
-             * @exception Exception e1 - Невозмонжость перехода на веб-сайт омегабота из-за несовместимости
              */
+             //Exception e1 - Невозмонжость перехода на веб-сайт омегабота из-за несовместимости
             public void actionPerformed(ActionEvent e) {
                 Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
                 URL url;
@@ -737,6 +748,31 @@ public class OpenblocksFrame extends JFrame {
                 }
             }
         });
+
+
+        ImageButton hideArduinoButton = new ImageButton(
+                uiMessageBundle.getString("ardublock.ui.autohide.button"),
+                "com/ardublock/block/buttons/autohideA.jpg",
+                "com/ardublock/block/buttons/autohideB.jpg",
+                infoLabel
+        );
+        hideArduinoButton.addActionListener(new ActionListener() {
+            /**
+             *
+             */
+            public void actionPerformed(ActionEvent e) {
+                //TODO: код ниже позволяет скрывать окно Arduino IDE, необходимо автоматически закрывать его, если
+                //  включен параметр @autostart@
+                hideArduinoToogle = false;
+                if (context.getEditor() != null) {
+                    context.getEditor().setVisible(!context.getEditor().isVisible());
+                }
+                else {
+                    System.out.println("[DEBUG] editor == null");
+                }
+            }
+        });
+
 
         ImageButton configButton = new ImageButton(
                 "controller",
@@ -783,6 +819,8 @@ public class OpenblocksFrame extends JFrame {
         buttons.add(dividerSecond);
         buttons.add(saveImageButton);
         buttons.add(websiteButton);
+        buttons.add(dividerThird);
+        buttons.add(hideArduinoButton);
         buttons.add(infoLabel);
 
         panelWithConfigButton.add(configButton);
@@ -990,7 +1028,6 @@ public class OpenblocksFrame extends JFrame {
             scanner = new Scanner(recentfiles);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            //System.out.println("eeerrrroooorrr");
             return;
         }
         while (scanner.hasNextLine()) {
@@ -1185,7 +1222,9 @@ public class OpenblocksFrame extends JFrame {
      * @return (optionValue == JOptionPane.YES_OPTION)
      */
     private boolean askUserOverwriteExistedFile() {
-        int optionValue = JOptionPane.showOptionDialog(this, uiMessageBundle.getString("message.content.overwrite"), uiMessageBundle.getString("message.title.question"), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, JOptionPane.YES_OPTION);
+        int optionValue = JOptionPane.showOptionDialog(this, uiMessageBundle.getString("message.content.overwrite"),
+                uiMessageBundle.getString("message.title.question"), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
+                null, null, JOptionPane.YES_OPTION);
         return (optionValue == JOptionPane.YES_OPTION);
     }
 
@@ -1251,14 +1290,16 @@ public class OpenblocksFrame extends JFrame {
                 case JOptionPane.YES_OPTION:
                     if (doSaveArduBlockFile()) {
                         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//                        System.exit(0);
+                        if (context.isInArduino() && !context.getEditor().isVisible())
+                            System.exit(0);
                     } else {
                         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
                     }
                     break;
                 case JOptionPane.NO_OPTION:
                     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//                    System.exit(0);
+                    if (context.isInArduino() && !context.getEditor().isVisible())
+                        System.exit(0);
                     break;
                 case JOptionPane.CANCEL_OPTION:
                     setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -1267,7 +1308,8 @@ public class OpenblocksFrame extends JFrame {
         } else {
 
             setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//            System.exit(0);
+            if (context.isInArduino() && !context.getEditor().isVisible())
+                System.exit(0);
 
         }
         settings.dispose();
@@ -1293,12 +1335,14 @@ public class OpenblocksFrame extends JFrame {
 
     /**
      * Метод для получения контекста (фона, рабочего пространства)
+     *
      * @return context
      */
 
     public Context getContext() {
         return this.context;
     }
+
 
     /**
      * Класс, работающий с внешним видом кнопок
@@ -1317,7 +1361,8 @@ public class OpenblocksFrame extends JFrame {
 
         /**
          * Метод, работающий с внешним видом кнопки
-         * @param name - название кнопки
+         *
+         * @param name  - название кнопки
          * @param iconA - первое изображение
          * @param iconB - второе изображение
          * @param label - метка
@@ -1360,14 +1405,15 @@ public class OpenblocksFrame extends JFrame {
         }
 
         /**
+         * Класс обработки прослушивателя событий мыши
          * @author AdmiralPaw, Ritevi, Aizek
-         * Класс обработки событий мыши
          */
         public class CustomMouseListener implements MouseListener {
 
             /**
              * Метод, указывающий на то, что мышь наведена
-             * @param e - Событие, указывающее, что в компоненте произошло действие мыши
+             *
+             * @param e Событие, указывающее, что в компоненте произошло действие мыши
              */
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -1378,7 +1424,8 @@ public class OpenblocksFrame extends JFrame {
 
             /**
              * Метод, указывающий на то, что мышь не наведена (убрана из зоны наведения)
-             * @param e - Событие, указывающее, что в компоненте произошло действие мыши
+             *
+             * @param e Событие, указывающее, что в компоненте произошло действие мыши
              */
             @Override
             public void mouseExited(MouseEvent e) {
@@ -1389,7 +1436,8 @@ public class OpenblocksFrame extends JFrame {
 
             /**
              * Метод, указывающий на то, что кнопка мыши была нажата
-             * @param e - Событие, указывающее, что в компоненте произошло действие мыши
+             *
+             * @param e Событие, указывающее, что в компоненте произошло действие мыши
              */
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -1398,7 +1446,8 @@ public class OpenblocksFrame extends JFrame {
             /**
              * Метод, указывающий на то, что кнопка мыши была нажата (Тоже самое?)
              * (Возможная разница: Click - быстрое нажатие, Press - зажатая кнопка мыши)
-             * @param e - Событие, указывающее, что в компоненте произошло действие мыши
+             *
+             * @param e Событие, указывающее, что в компоненте произошло действие мыши
              */
             @Override
             public void mousePressed(MouseEvent e) {
@@ -1406,7 +1455,8 @@ public class OpenblocksFrame extends JFrame {
 
             /**
              * Метод, указывающий на то, что кнопка мыши была отпущена
-             * @param e - Событие, указывающее, что в компоненте произошло действие мыши
+             *
+             * @param e Событие, указывающее, что в компоненте произошло действие мыши
              */
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -1425,6 +1475,7 @@ public class OpenblocksFrame extends JFrame {
 
         /**
          * Метод, показывающий что нажатие было совершено
+         *
          * @param but - кнопка
          */
         public ClickAction(JButton but) {
@@ -1433,6 +1484,7 @@ public class OpenblocksFrame extends JFrame {
 
         /**
          * Метод, показывающий, что действие было совершено
+         *
          * @param e - Событие совершённого действия
          */
         public void actionPerformed(ActionEvent e) {

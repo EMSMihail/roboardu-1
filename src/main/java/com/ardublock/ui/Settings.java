@@ -1,21 +1,22 @@
 package com.ardublock.ui;
 
 //<<<<<<< HEAD
+
 import com.mit.blocks.renderable.RenderableBlock;
-//=======
 import com.mit.blocks.workspace.BlocksKeeper;
-//>>>>>>> lerofaCtrlZ
 import com.mit.blocks.workspace.Workspace;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
+
+//=======
+//>>>>>>> lerofaCtrlZ
 
 /**
  * Класс, работающий с настройками, изменяющий их
@@ -50,19 +51,19 @@ public class Settings extends JFrame {
     RCheckBox egg;
 
     /**Поле ширины окна*/
-    int windowWidth = 400;
+    int windowWidth = 500;
 
     /**Поле высоты окна*/
-    int windowHeight = 300;
+    int windowHeight = 350;
 
     /**Поле с буфером нажатий кнопок*/
     private ArrayList<Integer> keyBuf;
-    
+
     /**Поле выборщика файла*/
     JFileChooser fileChooser;
 
     /**
-     * Метод с предустановками оконной процедуры "Настройки" 
+     * Метод с предустановками оконной процедуры "Настройки"
      * (Внешний вид, значения, режим окна и т.д.)
      * @param openblocksFrame Оконная процедура
      */
@@ -124,6 +125,7 @@ public class Settings extends JFrame {
         if (this.isFirstLaunch()) {
             userPrefs.putBoolean("is_first_launch", false);
             userPrefs.putBoolean("ardublock.ui.autostart", false);
+            userPrefs.putBoolean("ardublock.ui.autohide", false);
             userPrefs.putInt("ardublock.ui.autosaveInterval", 10);
             userPrefs.putInt("ardublock.ui.ctrlzLength", 10);
         }
@@ -272,6 +274,19 @@ public class Settings extends JFrame {
 
         position += offset;
 
+        text = new JLabel(uiMessageBundle.getString("ardublock.ui.autohide"));
+        text.setVerticalAlignment(SwingConstants.CENTER);
+        windowBodyPanel.add(text);
+        text.setBounds(leftOffset, position, 300, 40);
+        text.setFont(new Font(mainFont, Font.PLAIN, 15));
+
+        RCheckBox autohide = new RCheckBox();
+        autohide.setSelected(userPrefs.getBoolean("ardublock.ui.autohide", true));
+        windowBodyPanel.add(autohide);
+        autohide.setBounds(windowWidth - 44 - rigthOffset, position, 44, 40);
+
+        position += offset;
+
         text = new JLabel(uiMessageBundle.getString("ardublock.ui.autosaveInterval"));
         text.setVerticalAlignment(SwingConstants.CENTER);
         windowBodyPanel.add(text);
@@ -295,48 +310,66 @@ public class Settings extends JFrame {
         RSpinner queueSize = new RSpinner(new SpinnerNumberModel(userPrefs.getInt("ardublock.ui.ctrlzLength", 10), 5, 120, 5));
         windowBodyPanel.add(queueSize);
         queueSize.setBounds(getWidth() - 80 - rigthOffset, position + offset / 2 - spinnerHeigth / 2, 80, spinnerHeigth);
-        queueSize.setBounds(getWidth()-80-rigthOffset, position + offset/2 - spinnerHeigth/2, 80,spinnerHeigth);
+        queueSize.setBounds(getWidth() - 80 - rigthOffset, position + offset / 2 - spinnerHeigth / 2, 80, spinnerHeigth);
         BlocksKeeper.setSize(queueSize.getIntValue());
 
         position += offset;
-        
+
         text = new JLabel(uiMessageBundle.getString("ardublock.ui.path_autosave"));
         text.setVerticalAlignment(SwingConstants.CENTER);
         windowBodyPanel.add(text);
         text.setBounds(leftOffset, position, 300, 40);
         text.setFont(new Font(mainFont, Font.PLAIN, 15));
-        
+
         JButton button = new JButton(uiMessageBundle.getString("ardublock.ui.button_name_path_autosave"));
         windowBodyPanel.add(button);
         button.setBounds(getWidth() - 80 - rigthOffset, position + offset / 2 - spinnerHeigth / 2, 80, spinnerHeigth);
-        button.setBounds(getWidth()-80-rigthOffset, position + offset/2 - spinnerHeigth/2, 80,spinnerHeigth);  
+        button.setBounds(getWidth() - 80 - rigthOffset, position + offset / 2 - spinnerHeigth / 2, 80, spinnerHeigth);
         fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        
+
         position += offset;
-        
-        JTextField textField = new JTextField(uiMessageBundle.getString("ardublock.ui.path_autosave"),128);
+
+        JTextField textField = new JTextField(uiMessageBundle.getString("ardublock.ui.path_autosave"), 128);
         windowBodyPanel.add(textField);
-        textField.setBounds(leftOffset, position, getWidth()-leftOffset-rigthOffset, 30);
+        textField.setBounds(leftOffset, position, getWidth() - leftOffset - rigthOffset, 30);
         textField.setFont(new Font(mainFont, Font.PLAIN, 15));
-        
+
         String user = System.getProperty("user.name");
         String autosavePath = "C:\\Users\\" + user + "\\Documents\\OmegaBot_IDE\\";
-        
+
         textField.setText(autosavePath);
         button.addActionListener(new ActionListener() {
             /**
              *
-              * @param e Событие совершённого действия
+             * @param e Событие совершённого действия
              */
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            fileChooser.showOpenDialog(null);
-            textField.setText(fileChooser.getSelectedFile().getAbsolutePath());
-        }
-});
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fileChooser.showOpenDialog(null);
+                textField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+            }
+        });
         position += offset;
-        
+
+        //DEBAG
+//        JButton resetButton = new JButton("[reset]");
+//        windowBodyPanel.add(resetButton);
+//        resetButton.setBounds(getWidth() - 80 - rigthOffset, position + offset / 2 - spinnerHeigth / 2, 80, spinnerHeigth);
+//        resetButton.setBounds(getWidth() - 80 - rigthOffset, position + offset / 2 - spinnerHeigth / 2, 80, spinnerHeigth);
+//        resetButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                userPrefs.putBoolean("is_first_launch", true);
+//                userPrefs.putBoolean("is_key_valid", false);
+//                userPrefs.putBoolean("ardublock.ui.autostart", false);
+//                userPrefs.putInt("ardublock.ui.autosaveInterval", 10);
+//                userPrefs.putInt("ardublock.ui.ctrlzLength", 10);
+//            }
+//        });
+//
+//        position += offset;
+
         eggText = new JLabel(uiMessageBundle.getString("ardublock.ui.randomColor"));
         eggText.setVerticalAlignment(SwingConstants.CENTER);
         windowBodyPanel.add(eggText);
@@ -379,6 +412,7 @@ public class Settings extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 thisFrame.setVisible(false);
                 userPrefs.putBoolean("ardublock.ui.autostart", autostart.isSelected());
+                userPrefs.putBoolean("ardublock.ui.autohide", autohide.isSelected());
                 userPrefs.putInt("ardublock.ui.autosaveInterval", autosaveInterval.getIntValue());
                 userPrefs.putInt("ardublock.ui.ctrlzLength", queueSize.getIntValue());
                 openblocksFrame.setAutosaveInterval(autosaveInterval.getIntValue());
@@ -389,9 +423,45 @@ public class Settings extends JFrame {
         this.requestFocus();
     }
 
+    public boolean isProductKeyValid() {
+        return userPrefs.getBoolean("is_key_valid", false);
+    }
+
+    public boolean productKeyValidator(OpenblocksFrame openblocksFrame) {
+        if (this.isProductKeyValid()) {
+            return true;
+        }
+        while (true) {
+            String result = JOptionPane.showInputDialog(openblocksFrame,
+                    "Введите ключ продукта: ",
+                    "Авторизация",
+                    JOptionPane.PLAIN_MESSAGE);
+
+            if (result == null) {
+                return false;
+            }
+            //TODO сдесь нужна валидация с базой данных вместо if
+            else if (result.equals("1234")) {
+//                JOptionPane.showMessageDialog(openblocksFrame,
+//                        "Ключ верный!",
+//                        "Авторизация",
+//                        JOptionPane.PLAIN_MESSAGE);
+                userPrefs.putBoolean("is_key_valid", true);
+                userPrefs.put("key", "1234");
+                return true;
+            } else {
+                JOptionPane.showMessageDialog(openblocksFrame,
+                        new String[]{"Ключ не верный!", "Попробуйте снова"},
+                        "Авторизация",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
+        }
+    }
+
     /**
      * Метод, определяющий видимость
-     * @param e Логическая переменная, которая ответственная за видимость
+     *
+     * @param e - логическая переменная, которая ответственная за видимость
      */
     public void setVisible(boolean e) {
         super.setVisible(e);
@@ -402,7 +472,8 @@ public class Settings extends JFrame {
 
     /**
      * Метод, определяющий был ли это первый запуск или нет
-     * @return userPrefs.getBoolean("is_first_launch", true)
+     *
+     * @return userPrefs.getBoolean(" is_first_launch ", true)
      */
     public boolean isFirstLaunch() {
         return userPrefs.getBoolean("is_first_launch", true);
